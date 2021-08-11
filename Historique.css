@@ -1,0 +1,101 @@
+.historique .table-commandes table {
+    width: 100%;
+    padding: 0px 10px;
+    border-collapse: collapse;
+}
+
+.historique .container-historique {
+    display: grid;
+    grid-template-columns: 30vw 65vw;
+}
+
+.historique .search-zone input {
+    width: 90%;
+    height: 5vh;
+    outline: none;
+    border-radius: 5px;
+    color: #0e771a;
+    font-size: 17px;
+    margin-bottom: 5px;
+}
+  
+.historique .search-zone input:focus {
+      border: 2px solid #0e771a;
+}
+
+.historique h1 {
+    background: #0e771a;
+    color: #fff;
+    text-align: center;
+    padding: 5px 0px;
+}
+
+.historique .medocs-sortis {
+    margin-top: 10px;
+    margin-right: 15px;
+    margin-left: 5px;
+}
+
+.historique .medocs-sortis ul{
+    border: 1px solid gray;
+    overflow-y: auto;
+    position: relative;
+    height: 64vh;
+}
+
+.historique .medocs-sortis ul .loader {
+    position: absolute;
+    bottom: 45%;
+    left: 40%;
+}
+
+.historique .medocs-sortis ul li {
+    color: #0e771a;
+    font-weight: 600;
+    width: 100%;
+    padding: 0px 5px;
+}
+
+.historique .medocs-sortis ul li:hover {
+    background-color: #0e771a;
+    color: #f1f1f1;
+    cursor: pointer;
+}
+
+.historique .table-commandes {
+    height: 76vh;
+    width: 100%;
+    border: 1px solid #0e771a;
+    overflow-y: auto;
+    margin-top: 10px;
+}
+
+.historique .table-commandes table thead {
+    font-weight: 600;
+    background: #0e771a;
+    color: #f1f1f1;
+    position: sticky;
+    top: 0;
+    z-index: 111;
+}
+
+.historique .table-commandes table tbody tr:hover {
+    background-color: #0e771a;
+    color: #f1f1f1;
+    font-weight: 600;
+}
+
+.historique .table-commandes table tbody {
+    position: relative;
+}
+
+.historique .table-commandes table tbody .loader {
+    position: absolute;
+    left: 45%;
+    top: 160px;
+}
+
+.historique .table-commandes .entete-historique {
+    width: 100%;
+    text-align: center;
+}
