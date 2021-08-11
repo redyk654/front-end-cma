@@ -1,0 +1,118 @@
+.approvisionner {
+    display: grid;
+    grid-template-columns: 350px 1000px;
+    grid-gap: 10px;
+}
+
+.approvisionner .infos-approv, .approvisionner .details-approv {
+    width: 100%;
+}
+
+.approvisionner .infos-approv .montant-commande {
+    display: grid;
+    grid-template-columns: 70% 30%;
+    margin-bottom: 20px;
+}
+
+.approvisionner .infos-approv {
+    margin-left: 5px;
+}
+
+.approvisionner h1 {
+    font-size: larger;
+    background: #0e771a;
+    color: #f1f1f1;
+    text-align: center;
+}
+
+.approvisionner .infos-approv .search-zone input {
+    width: 70%;
+    height: 4vh;
+    outline: none;
+    border-radius: 5px;
+    color: #0e771a;
+    font-size: 17px;
+    margin-bottom: 5px;
+}
+
+.approvisionner ul{
+    border: 1px solid gray;
+    overflow-y: auto;
+    position: relative;
+    height: 55vh;
+}
+
+.approvisionner ul li {
+    color: #0e771a;
+    font-weight: 600;
+    width: 100%;
+    padding: 0px 5px;
+}
+
+.approvisionner ul li:hover {
+    background-color: #0e771a;
+    color: #f1f1f1;
+    cursor: pointer;
+}
+
+.approvisionner .details-approv form {
+    display: grid;
+    border: 1px solid green;
+    margin: 0px 5px;
+}
+
+.approvisionner .details-approv .box-container {
+    display: flex;
+}
+
+.approvisionner .details-approv .box {
+    margin: 10px;
+    width: 20%;
+}
+
+.approvisionner .details-approv label {
+    color: #0e771a;
+}
+
+.approvisionner .details-approv input{
+    outline: none;
+    height: 4vh;
+    font-size: 15px;
+    font-weight: 600;
+    color: #0e771a;
+}
+
+.approvisionner .details-approv .box button {
+    color: #fff;
+    background: #012557;
+    font-size: 18px;
+    margin-top: 25px;
+    width: 90%;
+    height: 5vh;
+    cursor: pointer;
+}
+
+.approvisionner .details-approv .produits-commandes .valider-btn button {
+    color: #fff;
+    background: #012557;
+    font-size: 18px;
+    margin-top: 25px;
+    width: 20%;
+    height: 5vh;
+    cursor: pointer;
+}
+
+.approvisionner .produits-commandes table {
+    border-spacing: 0px;
+    width: 100%;
+}
+
+.approvisionner .produits-commandes table thead {
+    font-weight: 600;
+    background: #0e771a;
+    color: #f1f1f1;
+}
+
+.approvisionner .produits-commandes table thead tr td, .approvisionner .produits-commandes table tbody tr td {
+    text-align: center;
+}
