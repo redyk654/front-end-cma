@@ -1,0 +1,143 @@
+.comptes h1 {
+    background: #0e771a;
+    color: #f1f1f1;
+    text-align: center;
+    font-size: larger;
+}
+
+.comptes .container-gestion {
+    display: flex;
+    justify-content: space-between;
+    padding: 5px;
+}
+
+.comptes .container-gestion div:first-child {
+    width: 30%;
+    margin-right: 10px;
+}
+
+.comptes .container-gestion div:last-child {
+    width: 100%;
+}
+
+.comptes .container-gestion ul{
+    border: 1px solid gray;
+    overflow-y: auto;
+    position: relative;
+    height: 60vh;
+}
+
+.comptes .container-gestion .nv-compte {
+    position: absolute;
+    bottom: 0;
+    text-align: center;
+}
+
+.comptes .container-gestion .nv-compte button {
+    color: #fff;
+    background: #012557;
+    font-size: 18px;
+    margin: 5px;
+    width: 30%;
+    height: 4vh;
+    cursor: pointer;
+}
+
+.comptes .container-gestion ul li {
+    color: #0e771a;
+    font-weight: 600;
+    width: 100%;
+    padding: 0px 5px;
+}
+
+.comptes .container-gestion ul li:hover {
+    background-color: #0e771a;
+    color: #f1f1f1;
+    cursor: pointer;
+}
+
+.comptes table {
+    border-spacing: 0px;
+    width: 100%;
+    margin-top: 5px;
+}
+
+.comptes table thead {
+    font-weight: 600;
+    background: #0e771a;
+    color: #f1f1f1;
+}
+
+.comptes table thead tr td, .comptes table tbody tr td {
+    text-align: center;
+}
+
+.comptes .box-2 .recette-jour input {
+    outline: none;
+    height: 4vh;
+    margin-top: 5px;
+    font-size: medium;
+    color: #0e771a;
+    border-color: #0e771a73;
+}
+
+.comptes .box-2 .recette-jour button {
+    color: #fff;
+    background: #012557;
+    font-size: 18px;
+    margin: 5px;
+    width: 10%;
+    height: 4vh;
+    cursor: pointer;
+}
+
+.comptes .box-2 .recette-jour button:disabled {
+    opacity: .4;
+    cursor: not-allowed;
+}
+
+.comptes .form-compte {
+    border: 1px solid #000;
+}
+
+.form-compte h3 {
+    color: #f1f1f1;
+    text-align: center;
+    margin-bottom: 15px;
+}
+
+.form-compte input[type=text] {
+    margin: 0;
+    margin-bottom: -10px;
+}
+
+.form-compte input {
+    outline: none;
+    border: none;
+    background: none;
+    border-bottom: 1px solid #f1f1f1;
+    width: 100%;
+    color: #f1f1f1;
+    font-size: medium;
+}
+
+.form-compte .box-input p{
+    margin-top: 30px;
+    color: #f1f1f1;
+}
+
+.form-compte .btn-control {
+    margin-top: 45px;
+    width: 100%;
+    text-align: center;
+}
+
+.form-compte .btn-control button {
+    background: #fffdfd;
+    font-size: 18px;
+    width: 30%;
+    height: 5vh;
+    cursor: pointer;
+    margin-left: 10px;
+    color: #000;
+}

@@ -1,0 +1,91 @@
+.form {
+    background: #0f1236;
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: center;
+    width: 100%;
+    height: 55vh;
+    padding-top: 50px;
+    position: relative;
+}
+
+.form form {
+    background: transparent;
+    width: 400px;
+    height: 85vh;
+    margin: auto;
+    padding: 30px 50px;
+    border-radius: 8px;
+    box-shadow: 5px 5px 10px rgb(8, 8, 8),
+                -5px -5px 10px rgb(5, 5, 5);
+}
+
+.title {
+    text-align: center;
+    color: #fff;
+}
+
+form .text-field:nth-child(2)
+{
+    margin-top: 55px;
+}
+
+form p:nth-child(3) {
+    margin-top: 40px;
+}
+
+p:nth-child(2), p:nth-child(3) {
+    position: relative;
+}
+
+.text-field label {
+    position: absolute;
+    left: 0;
+    bottom: 1px;
+    cursor: text;
+    color: #f1f1f1;
+    font-weight: 500;
+    letter-spacing: 1px;
+    transition: all .3s;
+}
+
+.form input[type="text"], .form input[type="password"] {
+    color: #f1f1f1;
+    width: 100%;
+    border: none;
+    background: none;
+    border-radius: 1px;
+    border-bottom: 1px solid #f1f1f1;
+    outline: none;
+    font-size: .93em;
+}
+
+
+.form form button[type="submit"] {
+    width: 100%;
+    padding: 15px;
+    font-size: 1.1em;
+    font-weight: 600;
+    border: 3px solid #f1f1f1;
+    color: #f1f1f1;
+    background: none;
+    cursor: pointer;
+    margin-top: 55px;
+    border-radius: 999px;
+    letter-spacing: 2px;
+    transition: all .2s;
+}
+
+.form form button[type="submit"]:hover {
+    background: #ffffff;
+    color: #0f1236;
+}
+
+.form form .message-erreur {
+    text-align: center;
+    position: relative;
+    bottom: -100px;
+    left: 0px;
+    font-weight: 600;
+    color: rgba(238, 42, 42, 0.952);
+}
