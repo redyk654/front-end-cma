@@ -1,0 +1,182 @@
+.commande {
+    display: grid;
+    grid-template-columns: 300px 1fr;
+    
+    height: 85vh;
+}
+
+.commande .left-side, .commande .right-side {
+    width: 100%;
+}
+
+.commande .right-side h1 {
+    background: #0e771a;
+    color: #f1f1f1;
+    text-align: center;
+    margin: 0px 5px;
+}
+
+.commande .left-side .liste-medoc h1 {
+    background-color: #0e771a;
+    color: #f1f1f1;
+    width: 100%;
+}
+
+.commande .left-side {
+    padding: 10px;
+}
+
+.commande .left-side .search-zone input {
+  width: 90%;
+  height: 5vh;
+  outline: none;
+  border-radius: 5px;
+  color: #0e771a;
+  font-size: 17px;
+}
+
+.commande .left-side .search-zone input:focus {
+    border: 2px solid #0e771a;
+}
+
+.commande .left-side .liste-medoc {
+    margin-top: 10px;
+}
+
+.commande .left-side .liste-medoc ul{
+    height: 70vh;
+    border: 1px solid gray;
+    overflow: auto;
+    position: relative;
+}
+
+.commande .left-side .liste-medoc ul .loader {
+    position: absolute;
+    bottom: 45%;
+    left: 40%;
+}
+
+.commande .left-side .liste-medoc ul li {
+    color: #0e771a;
+    font-weight: 600;
+    width: 100%;
+}
+
+.commande .left-side .liste-medoc ul li:hover {
+    background-color: #0e771a;
+    color: #f1f1f1;
+    cursor: pointer;
+}
+
+.commande .right-side .erreur-message {
+    width: 100%;
+    text-align: center;
+    color: rgba(238, 42, 42, 0.952);
+    font-weight: 600;
+    letter-spacing: 1px;
+}
+
+.commande .right-side .infos-medoc {
+    display: flex;
+    border: 1px solid green;
+    margin: 0px 5px;
+}
+
+.commande .right-side .infos-medoc .box {
+    margin: 10px;
+}
+
+.commande .right-side .infos-medoc label {
+    color: #0e771a;
+}
+
+
+.commande .right-side .infos-medoc .box {
+    display: flex;
+    justify-content: space-around;
+    align-items: flex-start;
+    flex-direction: column;
+    width: 100%;
+    margin-top: 10px;
+}
+
+.commande .right-side .infos-medoc .box p {
+    width: 320px;
+}
+
+.commande .right-side .infos-medoc .box .item p:last-child {
+    font-weight: 700;
+    color: #0c5f16;
+}
+
+.commande .right-side input{
+    outline: none;
+    width: 10%;
+    height: 4vh;
+    font-size: 15px;
+    font-weight: 600;
+    color: #0e771a;
+    margin-right: 5px;
+}
+
+.commande .right-side .box button {
+    color: #fff;
+    background: #012557;
+    font-size: 18px;
+    margin-top: 5px;
+    width: 10%;
+    height: 4vh;
+    cursor: pointer;
+}
+
+.commande .right-side .details-commande h1 {
+    margin-top: 5px;
+}
+
+.commande .right-side .details-commande {
+    width: 100%;
+}
+
+.commande .right-side .details-commande table {
+    width: 100%;
+    padding: 0px 10px;
+    border-collapse: separate;
+}
+
+.commande .right-side .details-commande table thead {
+    font-weight: 600;
+}
+
+.commande .right-side .details-commande table tbody {
+    color: #012557;
+}
+
+.commande .right-side .details-commande table thead tr td:nth-child(2),
+.commande .right-side .details-commande table tbody tr td:nth-child(2) {
+    text-align: center;
+}
+
+.commande .right-side .details-commande table thead tr td:last-child,
+.commande .right-side .details-commande table tbody tr td:last-child {
+    text-align: center;
+}
+
+.commande .right-side .details-commande .valider-annuler {
+    text-align: center;
+    margin-top: 20px;
+    padding: 10px 0px;
+}
+
+.commande .right-side .details-commande .valider-annuler button {
+    width: 150px;
+    height: 6vh;
+    color: #f1f1f1;
+    background-color: #012557;
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 17px;
+}
+
+.commande .right-side .details-commande .valider-annuler button:last-child {
+    margin-left: 20px;
+}
