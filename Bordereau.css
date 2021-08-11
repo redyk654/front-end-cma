@@ -1,0 +1,98 @@
+.container-bordereaux {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    padding: 6px;
+}
+
+.container-bordereaux .box-liste input {
+    width: 90%;
+    height: 5vh;
+    outline: none;
+    border-radius: 5px;
+    color: #0e771a;
+    font-size: 17px;
+    margin: 5px 0px;
+}
+  
+.container-bordereaux .box-liste input:focus {
+      border: 2px solid #0e771a;
+}
+
+.container-bordereaux h1 {
+    background: #0e771a;
+    color: #f1f1f1;
+    text-align: center;
+    font-size: larger;
+}
+
+.container-bordereaux div:first-child {
+    width: 35%;
+    margin-right: 10px;
+}
+
+.container-bordereaux div:last-child {
+    width: 100%;
+}
+
+.container-bordereaux ul{
+    border: 1px solid gray;
+    overflow-y: auto;
+    position: relative;
+    height: 64vh;
+}
+
+.container-bordereaux ul li {
+    color: #0e771a;
+    font-weight: 600;
+    width: 100%;
+    padding: 0px 5px;
+}
+
+.container-bordereaux ul li:hover {
+    background-color: #0e771a;
+    color: #f1f1f1;
+    cursor: pointer;
+}
+
+.container-bordereaux .box-bordereau .entete-bordereau {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 5px;
+    color: #0e771a;
+}
+
+.container-bordereaux .box-bordereau .entete-bordereau .span-entete {
+    font-weight: 600;
+    color: #0e771a;
+}
+
+.container-bordereaux .box-bordereau .bordereau-details {
+    width: 100%;
+    height: 50vh;
+    overflow-y: auto;
+    border: 1px solid #0e771a;
+}
+
+.container-bordereaux .box-bordereau table {
+    border-spacing: 0px;
+    width: 100%;
+}
+
+.container-bordereaux .box-bordereau table thead {
+    font-weight: 600;
+    background: #0e771a;
+    color: #f1f1f1;
+    position: sticky;
+    top: 0;
+}
+
+.container-bordereaux .box-bordereau table tbody tr td {
+    text-align: center;
+}
+
+.container-bordereaux .box-bordereau table thead tr td, .container-bordereaux .box-bordereau table tbody tr td {
+    text-align: center;
+}
