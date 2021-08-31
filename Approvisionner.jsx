@@ -49,6 +49,7 @@ export default function Approvisionner(props) {
     const [listeSauvegarde, setListeSauvegarde] = useState([]);
     const [produitsCommandes, setProduitsCommandes] = useState([]);
     const [infosMedoc, setInfosMedoc] = useState(medocs);
+    const [montantCommande, setMontantCommande] = useState('');
     const [medocsSelectionne, setMedocSelectionne] = useState({});
     const [listeFournisseurs, setListeFournisseurs] = useState([]);
     const [msgErreur, setMsgErreur] = useState('');
@@ -59,7 +60,7 @@ export default function Approvisionner(props) {
     useEffect(() => {
         // Récupération de la liste de produits via Ajax
         const req = new XMLHttpRequest();
-        req.open('GET', 'http://192.168.1.12/backend-cma/recuperer_medoc.php?stock=filtre');
+        req.open('GET', 'http://localhost/backend-cma/recuperer_medoc.php?stock=filtre');
 
         req.addEventListener('load', () => {
             const result = JSON.parse(req.responseText);
@@ -76,7 +77,7 @@ export default function Approvisionner(props) {
     useEffect(() => {
         // Récupération de la des fournisseurs
         const req = new XMLHttpRequest();
-        req.open('GET', 'http://192.168.1.12/backend-cma/recuperer_fournisseurs.php');
+        req.open('GET', 'http://localhost/backend-cma/recuperer_fournisseurs.php');
 
         req.addEventListener('load', () => {
             const result = JSON.parse(req.responseText);
@@ -112,24 +113,33 @@ export default function Approvisionner(props) {
          * Ajouter un médicament dans la commande
          */
         e.preventDefault();
-
-        if (!isNaN(stock_ajoute)) {
-
-            if(parseInt(stock_ajoute) > 0) {
-                if (!isNaN(pu_vente) && !isNaN(min_rec) && !isNaN(pu_achat)) {
-
-                    setMsgErreur('');
-                    const filtrerDoublons = produitsCommandes.filter(item => (item.designation != infosMedoc.designation));
-                    
-                    filtrerDoublons.push(infosMedoc);
-                    setProduitsCommandes(filtrerDoublons);
-                    setInfosMedoc(medocs);
+        const regex = /^\d+-\d+$/;
+        if (isNaN(montantCommande) || montantCommande.length === 0) {
+            setMsgErreur("le montant de la commande n'est pas défini");
+        } else if (parseInt(montantCommande) <= 0) {
+            setMsgErreur("Le montant de la commande ne peut pas être négatif ou nul");
+        } else {
+            if (isNaN(stock_ajoute)) {
+                setMsgErreur('veuillez saisir un nombre dans la quantité commandé');
+            } else if (!regex.test(date_peremption)) {
+                setMsgErreur('Le format de la date de péremption est incorrect');
+            } else {
+                if(parseInt(stock_ajoute) > 0) {
+                    if (!isNaN(pu_vente) && !isNaN(min_rec) && !isNaN(pu_achat)) {
+    
+                        setMsgErreur('');
+                        const filtrerDoublons = produitsCommandes.filter(item => (item.designation != infosMedoc.designation));
+                        
+                        filtrerDoublons.push(infosMedoc);
+                        setProduitsCommandes(filtrerDoublons);
+                        setInfosMedoc(medocs);
+                    } else {
+                        setMsgErreur("Le prix de vente, le prix d'achat et le stock minimum doivent être des nombres");
+                    }
                 } else {
-                    setMsgErreur("Le prix de vente, le prix d'achat et le stock minimum doivent être des nombres");
+                    setMsgErreur("la quantité commandé n'est pas défini");
                 }
             }
-        } else {
-            setMsgErreur('veuillez saisir un nombre dans la quantité commandé')
         }
     }
 
@@ -137,7 +147,7 @@ export default function Approvisionner(props) {
         // Fonction pour générer un identifiant unique pour une commande
         return Math.floor((1 + Math.random()) * 0x10000)
                .toString(16)
-               .substring(1) + montant_commande;
+               .substring(1) + montantCommande;
 
     }
 
@@ -146,72 +156,66 @@ export default function Approvisionner(props) {
          * Enregistrement des produits Commandés dans la table des produits
          * Enregistrement du borderau de la commande éffectué
          */
+        setMsgErreur('');
+        document.querySelectorAll('.btn-confirmation').forEach(item => {
+            item.disabled = true;
+        })
         
-        if (parseInt(montant_commande) > 0) {
-            setMsgErreur('');
-            document.querySelectorAll('.btn-confirmation').forEach(item => {
-                item.disabled = true;
-            })
-            
-            const idCommande = genererId();
-            const fournisseur = document.getElementById('fournisseur').value;
-            
-            // Remplissage de la table des produits
-            produitsCommandes.map(item => {
-                // Préparation des données à envoyer au serveur
-                const data = new FormData();
-                data.append('produit', JSON.stringify(item));
-                
-                const req = new XMLHttpRequest();
-                req.open('POST', 'http://192.168.1.12/backend-cma/maj_medocs.php');
-                
-                req.addEventListener('load', () => {
-                });
-                
-                req.send(data);
-                
-            });
-            
-            // Remplissage de la table d'approvisionnement
-            produitsCommandes.map(item => {
-                
-                const data = new FormData();
-                data.append('id_commande', idCommande);
-                data.append('produit', JSON.stringify(item));
-                
-                const req = new XMLHttpRequest();
-                req.open('POST', 'http://192.168.1.12/backend-cma/approvisionnement.php');
-                
-                req.addEventListener('load', () => {
-                    
-                });
-                
-                req.send(data);
-            })
-            
+        const idCommande = genererId();
+        const fournisseur = document.getElementById('fournisseur').value;
+        
+        // Remplissage de la table des produits
+        produitsCommandes.map(item => {
+            // Préparation des données à envoyer au serveur
             const data = new FormData();
-            
-            // Données relatives aux informations de la commande
-            data.append('id_commande', idCommande);
-            data.append('fournisseur', fournisseur);
-            data.append('vendeur', props.nomConnecte);
-            data.append('montant', montant_commande);
+            data.append('produit', JSON.stringify(item));
             
             const req = new XMLHttpRequest();
-            req.open('POST', 'http://192.168.1.12/backend-cma/approvisionnement.php');
+            req.open('POST', 'http://localhost/backend-cma/maj_medocs.php');
             
             req.addEventListener('load', () => {
-                if(req.status >= 200 && req.status < 400) {
-                    setModalConfirmation(false);
-                    setModalReussi(true);
-                }
             });
             
             req.send(data);
             
-        } else {
-            setMsgErreur("le montant de la commande n'est pas défini")
-        }
+        });
+        
+        // Remplissage de la table d'approvisionnement
+        produitsCommandes.map(item => {
+            
+            const data = new FormData();
+            data.append('id_commande', idCommande);
+            data.append('produit', JSON.stringify(item));
+            
+            const req = new XMLHttpRequest();
+            req.open('POST', 'http://localhost/backend-cma/approvisionnement.php');
+            
+            req.addEventListener('load', () => {
+                
+            });
+            
+            req.send(data);
+        })
+        
+        const data = new FormData();
+        
+        // Données relatives aux informations de la commande
+        data.append('id_commande', idCommande);
+        data.append('fournisseur', fournisseur);
+        data.append('vendeur', props.nomConnecte);
+        data.append('montant', montantCommande);
+        
+        const req = new XMLHttpRequest();
+        req.open('POST', 'http://localhost/backend-cma/approvisionnement.php');
+        
+        req.addEventListener('load', () => {
+            if(req.status >= 200 && req.status < 400) {
+                setModalConfirmation(false);
+                setModalReussi(true);
+            }
+        });
+        
+        req.send(data);
     }
 
     const fermerModalConfirmation = () => {
@@ -228,7 +232,7 @@ export default function Approvisionner(props) {
         <section className="approvisionner">
             <Modal
                 isOpen={modalConfirmation}
-                onRequestClose={setModalConfirmation}
+                onRequestClose={fermerModalConfirmation}
                 style={customStyles1}
                 contentLabel="validation commande"
             >
@@ -259,7 +263,7 @@ export default function Approvisionner(props) {
                 </div>
                 <div className="montant-commande">
                     <label htmlFor="">montant de la commande : </label>
-                    <input type="text" name="montant_commande" value={montant_commande} onChange={handleChange} />
+                    <input type="text" name="montant_commande" value={montantCommande} onChange={(e) => setMontantCommande(e.target.value)} />
                 </div>
                 <p className="search-zone">
                     <input type="text" placeholder="recherchez un produit" onChange={filtrerListe} />
@@ -310,7 +314,7 @@ export default function Approvisionner(props) {
                         <div className="box">
                             <div className="detail-item">
                                 <label htmlFor="">Date Péremption</label>
-                                <input type="text" name="date_peremption" placeholder="mm/jj" value={date_peremption} onChange={handleChange} autoComplete="off" />
+                                <input type="text" name="date_peremption" placeholder="mm-aa" value={date_peremption} onChange={handleChange} autoComplete="off" />
                             </div>
                             <div className="detail-item">
                                 <label htmlFor="">Quantité commandé</label>

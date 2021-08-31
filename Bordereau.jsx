@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import AfficherBordereau from './AfficherBordereau';
-import './Bordereau.css'
+import './Bordereau.css';
 
 export default function Bordereau(props) {
 
@@ -12,7 +12,7 @@ export default function Bordereau(props) {
 
     useEffect(() => {
         const req = new XMLHttpRequest();
-        req.open('GET', `http://192.168.1.12/backend-cma/recuperer_commandes.php?`);
+        req.open('GET', `http://localhost/backend-cma/recuperer_commandes.php?`);
 
         req.addEventListener('load', () => {
             const result = JSON.parse(req.responseText);
@@ -36,7 +36,7 @@ export default function Bordereau(props) {
 
         const req = new XMLHttpRequest();
 
-        req.open('POST', 'http://192.168.1.12/backend-cma/recuperer_commandes.php');
+        req.open('POST', 'http://localhost/backend-cma/recuperer_commandes.php');
 
         req.addEventListener('load', () => {
             const result = JSON.parse(req.responseText);

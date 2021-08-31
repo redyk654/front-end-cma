@@ -19,7 +19,7 @@ export default function Historique(props) {
         startChargement();
         // Récupération de la liste de produits via Ajax
         const req = new XMLHttpRequest();
-        req.open('GET', 'http://192.168.1.12/backend-cma/recuperer_historique.php');
+        req.open('GET', 'http://localhost/backend-cma/recuperer_historique.php');
 
         req.addEventListener('load', () => {
             const result = JSON.parse(req.responseText);
@@ -49,11 +49,11 @@ export default function Historique(props) {
         // Préparation des données
         const data1 = new FormData();
         data1.append('designation', medocSelectionne[0].designation);
-        data1.append('code', medocSelectionne[0].code);
-        data1.append('nom_vendeur', props.nomConnecte);
+        data1.append('date_peremption', medocSelectionne[0].date_peremption);
+        data1.append('categorie', medocSelectionne[0].categorie);
 
         const req1 = new XMLHttpRequest();
-        req1.open('POST', 'http://192.168.1.12/backend-cma/recuperer_historique.php');
+        req1.open('POST', 'http://localhost/backend-cma/recuperer_historique.php');
         req1.addEventListener('load', () => {
             if (req1.status >= 200 && req1.status < 400) {
                 const result = JSON.parse(req1.responseText);
@@ -77,7 +77,7 @@ export default function Historique(props) {
         data2.append('id', medocSelectionne[0].id);
 
         const req2 = new XMLHttpRequest();
-        req2.open('POST', 'http://192.168.1.12/backend-cma/recuperer_historique.php?');
+        req2.open('POST', 'http://localhost/backend-cma/recuperer_historique.php?');
         req2.addEventListener('load', () => {
             if (req2.status >= 200 && req2.status < 400) {
                 const result = JSON.parse(req2.responseText);
@@ -112,6 +112,7 @@ export default function Historique(props) {
                             <tr>
                                 <td>Code</td>
                                 <td>Désignation</td>
+                                <td>Catégorie</td>
                                 <td>Quantité</td>
                                 <td>Vendu par</td>
                                 <td>Le</td>
@@ -123,6 +124,7 @@ export default function Historique(props) {
                                 <tr key={item.id}>
                                     <td>{item.code}</td>
                                     <td>{item.designation}</td>
+                                    <td>{item.categorie}</td>
                                     <td>{item.quantite}</td>
                                     <td>{item.nom_vendeur.toUpperCase()}</td>
                                     <td>{item.date_vente.substr(0, 11)}</td>

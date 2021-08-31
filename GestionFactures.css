@@ -1,0 +1,64 @@
+.container-facture {
+    display: grid;
+    grid-template-columns: 400px 1fr;
+    
+    height: 85vh;
+}
+
+.container-facture .liste-medoc .search-zone input:focus {
+    border: 2px solid #0e771a;
+}
+
+.container-facture .liste-medoc {
+    margin-top: 10px;
+    padding: 10px;
+}
+
+.container-facture h3 {
+    background-color: #0e771a;
+    color: #f1f1f1;
+    width: 100%;
+    text-align: center;
+}
+
+.container-facture .search-zone input {
+    width: 80%;
+    height: 5vh;
+    outline: none;
+    border-radius: 5px;
+    color: #0e771a;
+    font-size: 17px;
+    margin-bottom: 5px;
+}
+
+
+.container-facture button {
+    color: #fff;
+    background: #012557;
+    font-size: 18px;
+    margin-top: 5px;
+    width: 35%;
+    height: 4vh;
+    cursor: pointer;
+}
+
+
+.container-facture .liste-medoc ul{
+    height: 60vh;
+    border: 1px solid gray;
+    overflow: auto;
+    position: relative;
+}
+
+.container-facture .liste-medoc ul li {
+    color: #0e771a;
+    font-weight: 600;
+    width: 100%;
+    line-height: 35px;
+}
+
+.container-facture .liste-medoc ul li:hover {
+    background-color: #0e771a;
+    color: #f1f1f1;
+    cursor: pointer;
+}

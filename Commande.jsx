@@ -48,6 +48,11 @@ export default function Commande(props) {
     const [qtePrixTotal, setQtePrixTotal] = useState({});
     const[actualiserQte, setActualiserQte] = useState(false);
     const [messageErreur, setMessageErreur] = useState('');
+    const [verse, setverse] = useState('');
+    const [montantVerse, setmontantVerse] = useState(0);
+    const [relicat, setrelicat] = useState(0);
+    const [resteaPayer, setresteaPayer] = useState(0);
+    const [idFacture, setidFacture] = useState('');
     const [modalConfirmation, setModalConfirmation] = useState(false);
     const [modalReussi, setModalReussi] = useState(false);
     const [statePourRerender, setStatePourRerender] = useState(true);
@@ -112,10 +117,34 @@ export default function Commande(props) {
                 enumerable: true
             });
 
+            Object.defineProperty(qtePrixTotal, 'a_payer', {
+                value: prixTotal,
+                configurable: true,
+                enumerable: true,
+            });
+
             setStatePourRerender(!statePourRerender); // état modifié pour rerendre le composant
         }
 
     }, [medocCommandes]);
+
+    useEffect(() => {
+        // Pour mettre à jour le relicat et le reste à payer
+        if (medocCommandes.length > 0) {
+            if (montantVerse >= parseInt(qtePrixTotal.a_payer)) {
+                setrelicat(montantVerse - parseInt(qtePrixTotal.a_payer));
+                setresteaPayer(0);
+            } else {
+                if (montantVerse < parseInt(qtePrixTotal.a_payer)) {
+                    setresteaPayer(parseInt(qtePrixTotal.a_payer) - montantVerse);
+                    setrelicat(0);
+                }
+            }
+        } else {
+            setresteaPayer(0);
+        }
+
+    }, [montantVerse, medocCommandes]);
 
     // permet de récolter les informations sur le médicament sélectioné
     const afficherInfos = (e) => {
@@ -172,6 +201,13 @@ export default function Commande(props) {
 
     }
 
+    const handleClick = (e) => {
+        if (medocCommandes.length > 0) {
+            setmontantVerse(verse);
+            setverse('');
+        }
+    }
+
     const removeMedoc = (id) => {
 
         /**
@@ -185,14 +221,60 @@ export default function Commande(props) {
     const annulerCommande = () => {
         setMedocCommandes([]);
         setQtePrixTotal({});
+        setmontantVerse('')
+        setrelicat(0);
+        setMessageErreur('');
+        setMedoSelect(false);
+        setverse('');
     }
 
     const sauvegarder = () => {
         const req = new XMLHttpRequest();
-        req.open('POST', 'http://192.168.1.12/backend-cma/backup.php');
+        req.open('POST', 'http://localhost/backend-cma/backup.php');
         req.send();
     }
 
+    const idUnique = () => {
+        // Création d'un identifiant unique pour la facture
+        const d = new Date()
+        const jour = d.getDate().toString() + d.getMonth().toString() + d.getFullYear().toString() + Math.random().toString().replace('.', '1');
+        
+        const heure = d.getSeconds().toString() + d.getHours().toString() + d.getMinutes().toString();
+
+        return jour + heure;        
+    }
+
+    const enregisterFacture = (id) => {
+
+        // Enregistrement de la facture
+
+
+        const data = new FormData();
+
+        data.append('id', id);
+        data.append('caissier', props.nomConnecte);
+        data.append('prix_total', qtePrixTotal.prix_total);
+        data.append('a_payer', qtePrixTotal.a_payer);
+        data.append('montant_verse', montantVerse);
+        data.append('relicat', relicat);
+        data.append('reste_a_payer', resteaPayer);
+
+        const req = new XMLHttpRequest();
+        req.open('POST', 'http://localhost/backend-cma/factures_pharmacie.php');
+
+        req.addEventListener('load', () => {
+            setActualiserQte(!actualiserQte);
+            setMedoSelect(false);
+            setMessageErreur('');
+            // Activation de la fenêtre modale qui indique la réussite de la commmande
+            setModalReussi(true);
+            // Désactivation de la fenêtre modale de confirmation
+            setModalConfirmation(false);
+        });
+
+        req.send(data);
+
+    }
 
     const validerCommande = () => {
 
@@ -210,7 +292,6 @@ export default function Commande(props) {
                 item.stock_restant = parseInt(item.en_stock) - parseInt(item.qte_commander);
             });
 
-
             // Mise à jour des stocks des médicaments vendus
             medocCommandes.map(item => {
                 const data1 = new FormData();
@@ -218,7 +299,7 @@ export default function Commande(props) {
                 data1.append('stock_restant', item.stock_restant);
 
                 const req1 = new XMLHttpRequest();
-                req1.open('POST', 'http://192.168.1.12/backend-cma/maj_medocs.php');
+                req1.open('POST', 'http://localhost/backend-cma/maj_medocs.php');
 
                 req1.addEventListener("load", function () {
                     if (req1.status >= 200 && req1.status < 400) {
@@ -230,11 +311,17 @@ export default function Commande(props) {
                 req1.send(data1);
             });
 
+            const id = idUnique();
+            setidFacture(id);
+
+            let i = 0;
             medocCommandes.map(item => {
 
                 const data2 = new FormData();
                 data2.append('code', item.code);
                 data2.append('designation', item.designation);
+                data2.append('id_facture', id);
+                data2.append('categorie', item.categorie);
                 data2.append('date_peremption', item.date_peremption);
                 data2.append('quantite', item.qte_commander);
                 data2.append('prix_total', item.prix);
@@ -242,19 +329,15 @@ export default function Commande(props) {
 
                 // Envoi des données
                 const req2 = new XMLHttpRequest();
-                req2.open('POST', 'http://192.168.1.12/backend-cma/maj_historique.php');
+                req2.open('POST', 'http://localhost/backend-cma/maj_historique.php');
                 
                 // Une fois la requête charger on vide tout les états
                 req2.addEventListener('load', () => {
                     if (req2.status >= 200 && req2.status < 400) {
-                        // setMedocCommandes([]);
-                        setActualiserQte(!actualiserQte);
-                        setMedoSelect(false); // état modifié pour permettre l'execution du premier useEffect
-                        setMessageErreur('');
-                        // Activation de la fenêtre modale qui indique la réussite de la commmande
-                        setModalReussi(true);
-                        // Désactivation de la fenêtre modale de confirmation
-                        setModalConfirmation(false);
+                        i++
+                        if (i === medocCommandes.length) {
+                            enregisterFacture(id);
+                        }
                     }
                 });
                 req2.send(data2);
@@ -314,7 +397,7 @@ export default function Commande(props) {
             </div>
 
             <div className="right-side">
-                <h1>{medocSelect ? "Détails du médicament" : "Selectionnez un médicament pour voir les détails"}</h1>
+                <h1>{medocSelect ? "Détails du produit" : "Selectionnez un produit pour voir les détails"}</h1>
 
                 <div className="infos-medoc">
                     {medocSelect && medocSelect.map(item => (
@@ -335,6 +418,11 @@ export default function Commande(props) {
                     <div className="detail-item">
                         <input type="text" name="qteDesire" value={qteDesire} onChange={(e) => {setQteDesire(e.target.value)}} autoComplete='off' />
                         <button onClick={ajouterMedoc}>ajouter</button>
+                    </div>
+                    <div style={{textAlign: 'center'}}>
+                        <label htmlFor="">Montant versé : </label>
+                        <input type="text" name='verse' value={verse} onChange={(e) => !isNaN(e.target.value) && setverse(e.target.value)} autoComplete='off' />
+                        <button onClick={handleClick} style={{width: '5%'}}>ok</button>
                     </div>
                 </div>
 
@@ -370,10 +458,19 @@ export default function Commande(props) {
                             Produits : <span style={{color: "#0e771a", fontWeight: "600"}}>{medocCommandes.length}</span>
                         </div>
                         <div className="totaux">
-                            Quantité : <span style={{color: "#0e771a", fontWeight: "600"}}>{medocCommandes.length > 0 ? qtePrixTotal.qte_total : 0}</span>
-                        </div>
-                        <div className="totaux">
                             Prix total : <span style={{color: "#0e771a", fontWeight: "600"}}>{medocCommandes.length > 0 ? qtePrixTotal.prix_total + ' Fcfa': 0 + ' Fcfa'}</span>
+                        </div>
+                        <div>
+                            Net à payer : <span style={{color: "#0e771a", fontWeight: "600"}}>{qtePrixTotal.a_payer ? qtePrixTotal.a_payer + ' Fcfa': 0 + ' Fcfa'}</span>
+                        </div>
+                        <div>
+                            Montant versé : <span style={{color: "#0e771a", fontWeight: "600"}}>{montantVerse > 0 ? montantVerse + ' Fcfa': 0 + ' Fcfa'}</span>
+                        </div>
+                        <div>
+                            Relicat : <span style={{color: "#0e771a", fontWeight: "600"}}>{relicat > 0 ? relicat + ' Fcfa': 0 + ' Fcfa'}</span>
+                        </div>
+                        <div>
+                            Reste à payer : <span style={{color: "#0e771a", fontWeight: "600"}}>{resteaPayer > 0 ? resteaPayer + ' Fcfa': 0 + ' Fcfa'}</span>
                         </div>
                         <button onClick={annulerCommande}>Annnuler</button>
                         <button onClick={() => { if(medocCommandes.length > 0) {setModalConfirmation(true)}}}>Valider</button>
@@ -383,9 +480,14 @@ export default function Commande(props) {
                         <div style={{display: 'none'}}>
                             <Facture 
                             ref={componentRef}
-                            medocCommandes={medocCommandes} 
-                            prixTotal={qtePrixTotal}
+                            medocCommandes={medocCommandes}
                             nomConnecte={props.nomConnecte} 
+                            idFacture={idFacture}
+                            prixTotal={qtePrixTotal.prix_total}
+                            aPayer={qtePrixTotal.a_payer}
+                            montantVerse={montantVerse}
+                            relicat={relicat}
+                            resteaPayer={resteaPayer}
                             />
                         </div>
                     </div>
