@@ -43,7 +43,7 @@ export default function ModifierProduit() {
     useEffect(() => {
         // Récupération de la liste de produits via Ajax
         const req = new XMLHttpRequest();
-        req.open('GET', 'http://192.168.1.12/backend-cma/recuperer_medoc.php');
+        req.open('GET', 'http://localhost/backend-cma/recuperer_medoc.php');
 
         req.addEventListener('load', () => {
             if(req.status >= 200 && req.status < 400) {
@@ -76,7 +76,7 @@ export default function ModifierProduit() {
             data.append('id', produitSelectionne[0].id);
 
             const req = new XMLHttpRequest();
-            req.open('POST', 'http://192.168.1.12/backend-cma/supprimer_produit.php');
+            req.open('POST', 'http://localhost/backend-cma/supprimer_produit.php');
 
             req.addEventListener('load', () => {
                 if (req.status >= 200 && req.status < 400) {
@@ -105,7 +105,7 @@ export default function ModifierProduit() {
             data.append('designation', produitSelectionne[0].designation);
             
             const req = new XMLHttpRequest();
-            req.open('POST', 'http://192.168.1.12/backend-cma/maj_prix.php');
+            req.open('POST', 'http://localhost/backend-cma/maj_prix.php');
             
             req.addEventListener('load', () => {
                 if (req.status >= 200 && req.status < 400) {
@@ -134,8 +134,6 @@ export default function ModifierProduit() {
         setModalModifPrix(false)
         setnvprix('');
     }
-
-    console.log(produitSelectionne[0]);
 
     return (
         <section className="modif-produit">

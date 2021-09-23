@@ -21,7 +21,7 @@ const customStyles1 = {
       transform: 'translate(-50%, -50%)',
       background: '#0e771a',
     },
-  };
+};
 
 const customStyles2 = {
     content: {
@@ -32,6 +32,18 @@ const customStyles2 = {
         marginRight: '-50%',
         transform: 'translate(-50%, -50%)',
         background: '#0e771a',
+      },
+};
+
+const customStyles3 = {
+    content: {
+        top: '50%',
+        left: '50%',
+        right: 'auto',
+        bottom: 'auto',
+        marginRight: '-50%',
+        transform: 'translate(-50%, -50%)',
+        background: '#fa222a',
       },
 };
 
@@ -53,6 +65,8 @@ export default function Commande(props) {
     const [relicat, setrelicat] = useState(0);
     const [resteaPayer, setresteaPayer] = useState(0);
     const [idFacture, setidFacture] = useState('');
+    const [alerteStock, setAlerteStock] = useState('');
+    const [modalAlerte, setModalAlerte] = useState(false);
     const [modalConfirmation, setModalConfirmation] = useState(false);
     const [modalReussi, setModalReussi] = useState(false);
     const [statePourRerender, setStatePourRerender] = useState(true);
@@ -150,6 +164,13 @@ export default function Commande(props) {
     const afficherInfos = (e) => {
         const medocSelectionne = listeMedoc.filter(item => (item.id == e.target.value));
         setMedoSelect(medocSelectionne);
+        if (parseInt(medocSelectionne[0].en_stock) === 0) {
+            setAlerteStock('le stock de ' + medocSelectionne[0].designation + ' est épuisé ! Pensez à vous approvisionner');
+            setModalAlerte(true);
+        } else if (parseInt(medocSelectionne[0].en_stock) <= parseInt(medocSelectionne[0].min_rec)) {
+            setAlerteStock('Vous serez bientôt à cour de ' + medocSelectionne[0].designation + ' ! Pensez à vous approvisionner');
+            setModalAlerte(true);
+        }
     }
 
     // Filtrage de la liste de médicaments affichés lors de la recherche d'un médicament
@@ -270,6 +291,7 @@ export default function Commande(props) {
             setModalReussi(true);
             // Désactivation de la fenêtre modale de confirmation
             setModalConfirmation(false);
+            annulerCommande();
         });
 
         req.send(data);
@@ -281,7 +303,7 @@ export default function Commande(props) {
         /* 
             Organisation des données qui seront envoyés au serveur :
                 - pour la mise à jour des stocks de médicaments
-                - pour la mise à jour de l'historique des commandes
+                - pour la mise à jour de l'historique des ventes
         */
         
         if(medocCommandes.length > 0) {
@@ -293,23 +315,23 @@ export default function Commande(props) {
             });
 
             // Mise à jour des stocks des médicaments vendus
-            medocCommandes.map(item => {
-                const data1 = new FormData();
-                data1.append('id_medoc_restant', item.id);
-                data1.append('stock_restant', item.stock_restant);
+            // medocCommandes.map(item => {
+            //     const data1 = new FormData();
+            //     data1.append('id_medoc_restant', item.id);
+            //     data1.append('stock_restant', item.stock_restant);
 
-                const req1 = new XMLHttpRequest();
-                req1.open('POST', 'http://localhost/backend-cma/maj_medocs.php');
+            //     const req1 = new XMLHttpRequest();
+            //     req1.open('POST', 'http://localhost/backend-cma/maj_medocs.php');
 
-                req1.addEventListener("load", function () {
-                    if (req1.status >= 200 && req1.status < 400) {
-                    } else {
-                        console.log(req1.status + " " + req1.statusText);
-                    }
-                });
+            //     req1.addEventListener("load", function () {
+            //         if (req1.status >= 200 && req1.status < 400) {
+            //         } else {
+            //             console.log(req1.status + " " + req1.statusText);
+            //         }
+            //     });
 
-                req1.send(data1);
-            });
+            //     req1.send(data1);
+            // });
 
             const id = idUnique();
             setidFacture(id);
@@ -320,6 +342,7 @@ export default function Commande(props) {
                 const data2 = new FormData();
                 data2.append('code', item.code);
                 data2.append('designation', item.designation);
+                data2.append('id_prod', item.id);
                 data2.append('id_facture', id);
                 data2.append('categorie', item.categorie);
                 data2.append('date_peremption', item.date_peremption);
@@ -355,8 +378,20 @@ export default function Commande(props) {
         setMedocCommandes([]);
     }
 
+    const fermModalAlerte = () => {
+        setModalAlerte(false);
+    }
+
     return (
         <section className="commande">
+            <Modal
+                isOpen={modalAlerte}
+                style={customStyles3}
+                onRequestClose={fermModalAlerte}
+            >
+                <h2 style={{color: '#fff'}}>{alerteStock}</h2>
+                <button style={{width: '20%', height: '5vh', cursor: 'pointer', marginRight: '15px', fontSize: 'large'}} onClick={fermModalAlerte}>Fermer</button>
+            </Modal>
             <Modal
                 isOpen={modalConfirmation}
                 style={customStyles1}
@@ -374,11 +409,7 @@ export default function Commande(props) {
                 contentLabel="Commande réussie"
             >
                 <h2 style={{color: '#fff'}}>La vente a bien été enregistré !</h2>
-                <button style={{width: '20%', height: '5vh', cursor: 'pointer', marginRight: '15px', fontSize: 'large'}} onClick={fermerModalReussi}>ok</button>
-                <ReactToPrint
-                    trigger={() => <button style={{color: '#303031', height: '5vh', width: '7vw', cursor: 'pointer', fontSize: 'large', fontWeight: '600'}}>Imprimer</button>}
-                    content={() => componentRef.current}
-                />
+                <button style={{width: '20%', height: '5vh', cursor: 'pointer', marginRight: '15px', fontSize: 'large'}} onClick={fermerModalReussi}>Fermer</button>
             </Modal>
             <div className="left-side">
 
@@ -419,11 +450,6 @@ export default function Commande(props) {
                         <input type="text" name="qteDesire" value={qteDesire} onChange={(e) => {setQteDesire(e.target.value)}} autoComplete='off' />
                         <button onClick={ajouterMedoc}>ajouter</button>
                     </div>
-                    <div style={{textAlign: 'center'}}>
-                        <label htmlFor="">Montant versé : </label>
-                        <input type="text" name='verse' value={verse} onChange={(e) => !isNaN(e.target.value) && setverse(e.target.value)} autoComplete='off' />
-                        <button onClick={handleClick} style={{width: '5%'}}>ok</button>
-                    </div>
                 </div>
 
                 <div className='erreur-message'>{messageErreur}</div>
@@ -435,14 +461,14 @@ export default function Commande(props) {
                         <thead>
                             <tr>
                                 <td>Produits</td>
-                                <td>Quantité</td>
-                                <td>Prix unitaire</td>
-                                <td>Prix total</td>
+                                <td>Quantités</td>
+                                <td>Pu</td>
+                                <td>Total</td>
                             </tr>
                         </thead>
                         <tbody>
                             {medocCommandes.map(item => (
-                                <tr key={item.id}>
+                                <tr key={item.id} style={{fontWeight: '600'}}>
                                     <td>{item.designation}</td>
                                     <td style={{color: `${parseInt(item.en_stock) < parseInt(item.qte_commander) ? 'red' : ''}`}}>{item.qte_commander}</td>
                                     <td>{item.pu_vente + ' Fcfa'}</td>
@@ -462,15 +488,6 @@ export default function Commande(props) {
                         </div>
                         <div>
                             Net à payer : <span style={{color: "#0e771a", fontWeight: "600"}}>{qtePrixTotal.a_payer ? qtePrixTotal.a_payer + ' Fcfa': 0 + ' Fcfa'}</span>
-                        </div>
-                        <div>
-                            Montant versé : <span style={{color: "#0e771a", fontWeight: "600"}}>{montantVerse > 0 ? montantVerse + ' Fcfa': 0 + ' Fcfa'}</span>
-                        </div>
-                        <div>
-                            Relicat : <span style={{color: "#0e771a", fontWeight: "600"}}>{relicat > 0 ? relicat + ' Fcfa': 0 + ' Fcfa'}</span>
-                        </div>
-                        <div>
-                            Reste à payer : <span style={{color: "#0e771a", fontWeight: "600"}}>{resteaPayer > 0 ? resteaPayer + ' Fcfa': 0 + ' Fcfa'}</span>
                         </div>
                         <button onClick={annulerCommande}>Annnuler</button>
                         <button onClick={() => { if(medocCommandes.length > 0) {setModalConfirmation(true)}}}>Valider</button>

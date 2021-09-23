@@ -23,7 +23,7 @@ export default function Maj(props) {
 
     return (
         <section className="conteneur-sous-onglets">
-          <div className="onglets-blocs" style={{width: '41%'}}>
+          <div className="onglets-blocs" style={{width: '45%'}}>
             <div className={`tab ${onglet === 1 ? 'active' : ''}`} onClick={ () => {setOnglet(1)}}>Approvisionner</div>
             <div className={`tab ${onglet === 2 ? 'active' : ''}`} onClick={ () => {setOnglet(2)}}>Modifier infos</div>
             <div className={`tab ${onglet === 3 ? 'active' : ''}`} onClick={ () => {setOnglet(3)}}>Commandes</div>

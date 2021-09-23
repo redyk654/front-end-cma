@@ -81,7 +81,7 @@
     border-color: #0e771a73;
 }
 
-.comptes .box-2 .recette-jour button {
+.comptes .box-2 .details-compte button {
     color: #fff;
     background: #012557;
     font-size: 18px;
@@ -91,9 +91,14 @@
     cursor: pointer;
 }
 
-.comptes .box-2 .recette-jour button:disabled {
-    opacity: .4;
-    cursor: not-allowed;
+.comptes button {
+    color: #fff;
+    background: #012557;
+    font-size: 18px;
+    margin: 5px;
+    width: 10%;
+    height: 4vh;
+    cursor: pointer;
 }
 
 .comptes .form-compte {

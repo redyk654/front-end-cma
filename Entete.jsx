@@ -4,6 +4,19 @@ import Recette from '../Recette/Recette';
 import ReactToPrint from 'react-to-print';
 import Modal from 'react-modal';
 
+const customStyles1 = {
+    content: {
+      top: '32%',
+      left: '50%',
+      right: 'auto',
+      bottom: 'auto',
+      marginRight: '-50%',
+      transform: 'translate(-50%, -50%)',
+      background: '#0e771a',
+    },
+};
+
+
 const customStyles2 = {
     content: {
         top: '50%',
@@ -20,8 +33,19 @@ export default function Entete(props) {
 
     const componentRef = useRef();
 
+    const utilisateur = {
+        ancien: '',
+        nouveau: '',
+        confirmation: ''
+    }
+
     const [recettejour, setRecetteJour] = useState({recette: ''});
     const [modalReussi, setModalReussi] = useState(false);
+    const [nouveauMdp, setNouveauMdp] = useState(utilisateur);
+    const [modalConfirmation, setModalConfirmation] = useState(false);
+    const [msgErreur, setMsgErreur] = useState('');
+
+    const { ancien, nouveau, confirmation } = nouveauMdp;
 
     const calculRecetteJour = () => {
         // Récupération de la recette en cours du vendeur
@@ -67,10 +91,59 @@ export default function Entete(props) {
         req.send(data);
     }
 
+    const modifierMotDePasse = (e) => {
+        // Modification du mot de passe
+
+        e.preventDefault();
+
+        if (nouveau.length > 0 && nouveau === confirmation) {
+            setMsgErreur('');
+            const data = new FormData();
+            data.append('nom', props.nomConnecte);
+            data.append('ancien', ancien);
+            data.append('nouveau', nouveau);
+
+            const req = new XMLHttpRequest();
+            req.open('POST', 'http://localhost/backend-cma/modif_password.php');
+
+            req.addEventListener('load', () => {
+                if (req.status >= 200 && req.status < 400) {
+                    if (req.responseText == "L'ancien mot de passe ne corresppond pas") {
+                        setMsgErreur("L'ancien mot de passe ne corresppond pas");
+                    } else  {
+                        setNouveauMdp(utilisateur);
+                        fermerModalConfirmation();
+                        setModalReussi(true);
+                    }
+                } else {
+                    console.log(req.status + " " + req.statusText);
+                }
+            })
+
+            req.send(data);
+
+        } else {
+            setMsgErreur('Le mot de passe et le mot passe de confirmation doivent être identique')
+        }
+    }
+
+    const handleChange = (e) => {
+        setNouveauMdp({...nouveauMdp, [e.target.name]: e.target.value});
+    }
 
     const deconnection = () => {
         props.setConnecter(false);
         props.setOnglet(1);
+        setModalReussi(false);
+    }
+
+    const fermerModalConfirmation = () => {
+        setModalConfirmation(false);
+        setMsgErreur('');
+        setNouveauMdp(utilisateur);
+    }
+
+    const fermerModalReussi = () => {
         setModalReussi(false);
     }
 
@@ -81,17 +154,45 @@ export default function Entete(props) {
                 style={customStyles2}
                 contentLabel="Recette jour"
             >
-                <h2 style={{color: '#fff'}}>Imprimez votre fiche de recette du jour</h2>
-                <button style={{width: '20%', height: '5vh', cursor: 'pointer', marginRight: '15px', fontSize: 'large'}} onClick={enregisterRecette}>ok</button>
-                <ReactToPrint
-                    trigger={() => <button style={{color: '#303031', height: '5vh', width: '7vw', cursor: 'pointer', fontSize: 'large', fontWeight: '600'}}>Imprimer</button>}
-                    content={() => componentRef.current}
-                />
+                <div>
+                    <h2 style={{color: '#fff'}}>Mot de passe modifié avec succès✔️ !</h2>
+                    <button style={{width: '20%', height: '5vh', cursor: 'pointer', fontSize: 'large'}} onClick={fermerModalReussi}>Fermer</button>
+                </div>
+            </Modal>
+            <Modal
+                isOpen={modalConfirmation}
+                onRequestClose={fermerModalConfirmation}
+                style={customStyles1}
+                contentLabel=""
+            >
+                <form action="" className="form-compte">
+                    <h3>Modifier mot de passe</h3>
+                    <div className="box-input">
+                        <p className="input-zone">
+                            <label htmlFor="">Ancien mot de passe</label>
+                            <input type="password" name="ancien" value={ancien} onChange={handleChange} autoComplete="off" />
+                        </p>
+                        <p className="input-zone">
+                            <label htmlFor="">Nouveau mot de passe</label>
+                            <input type="password" name="nouveau" value={nouveau} onChange={handleChange} autoComplete="off" />
+                        </p>
+                        <p className="input-zone">
+                            <label htmlFor="">Confirmer nouveau mot de passe</label>
+                            <input type="password" name="confirmation" value={confirmation} onChange={handleChange} autoComplete="off" />
+                        </p>
+                    </div>
+                    <div style={{color: '#fff53b'}}>{msgErreur}</div>
+                    <div className="btn-control">
+                        <button type="reset" onClick={fermerModalConfirmation}>annuler</button>
+                        <button type="submit" onClick={modifierMotDePasse}>valider</button>
+                    </div>
+                </form>
             </Modal>
             <div className="box-entete">
                 <h3>{props.nomConnecte.toUpperCase()}</h3>
-                <button onClick={calculRecetteJour}>Déconnection</button>
+                <button onClick={deconnection}>Déconnection</button>
             </div>
+            <button style={{width: '15%', position: 'absolute', left: '250px', bottom: 30}} onClick={() => {setModalConfirmation(true)}} >Modifier mot de passe</button>
             <h1>
                 © CMA de Bepanda
             </h1>

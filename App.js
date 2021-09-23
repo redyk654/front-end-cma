@@ -21,7 +21,7 @@ function App() {
   const [nomConnecte, setNomConnecte] = useState('');
   const [role, setRole] = useState('');
 
-  const date_e = new Date('2022-03-08');
+  const date_e = new Date('2022-04-06');
   const date_jour  = new Date();
 
   let contenu;
@@ -50,8 +50,7 @@ function App() {
           <section className="conteneur-onglets">
             <div className="onglets-blocs">
               <div className={`tab ${onglet === 1 ? 'active' : ''}`} onClick={ () => {setOnglet(1)}}>Ventes</div>
-              <div className={`tab ${onglet === 5 ? 'active' : ''}`} onClick={ () => {setOnglet(5)}}>Factures</div>
-              <div className={`tab ${onglet === 2 ? 'active' : ''}`} onClick={ () => {setOnglet(2)}}>Historique</div>
+              <div className={`tab ${onglet === 2 ? 'active' : ''}`} onClick={ () => {setOnglet(2)}}>Inventaires</div>
               <div className={`tab ${onglet === 3 ? 'active' : ''}`} onClick={ () => {setOnglet(3)}}>Gestion des stocks</div>
               <div className={`tab ${onglet === 4 ? 'active' : ''}`} onClick={ () => {setOnglet(4)}}>Comptes</div>
             </div>
@@ -66,9 +65,8 @@ function App() {
         <main className='app'>
           <Entete nomConnecte={nomConnecte} setConnecter={setConnecter} setOnglet={setOnglet} />
           <section className="conteneur-onglets">
-            <div className="onglets-blocs">
+            <div className="onglets-blocs" style={{width: '30%'}}>
               <div className={`tab ${onglet === 1 ? 'active' : ''}`} onClick={ () => {setOnglet(1)}}>Ventes</div>
-              <div className={`tab ${onglet === 5 ? 'active' : ''}`} onClick={ () => {setOnglet(5)}}>Factures</div>
               <div className={`tab ${onglet === 3 ? 'active' : ''}`} onClick={ () => {setOnglet(3)}}>Gestion des stocks</div>
             </div>
             <div className="onglets-contenu">
@@ -82,9 +80,8 @@ function App() {
         <main className='app'>
           <Entete nomConnecte={nomConnecte} setConnecter={setConnecter} setOnglet={setOnglet} />
           <section className="conteneur-onglets">
-            <div className="onglets-blocs">
-              <div className={`tab ${onglet === 1 ? 'active' : ''}`} onClick={ () => {setOnglet(1)}}>Ventes</div>
-              <div className={`tab ${onglet === 5 ? 'active' : ''}`} onClick={ () => {setOnglet(5)}}>Factures</div>
+            <div className="onglets-blocs" style={{width: '20%'}}>
+              {/* <div className={`tab ${onglet === 1 ? 'active' : ''}`} onClick={ () => {setOnglet(1)}}>Ventes</div> */}
             </div>
             <div className="onglets-contenu">
                 {contenu}

@@ -43,6 +43,7 @@ export default function Comptes(props) {
     const [msgErreur, setMsgErreur] = useState('');
     const [modalConfirmation, setModalConfirmation] = useState(false);
     const [modalReussi, setModalReussi] = useState(false);
+    const [reussi, setReussi] = useState('supp');
 
     const { nom, mdp, confirmation } = nvCompte;
 
@@ -56,7 +57,6 @@ export default function Comptes(props) {
         req.addEventListener('load', () => {
             if(req.status >= 200 && req.status < 400) {
                 let result = JSON.parse(req.responseText);
-                console.log(result);
                 result = result.filter(item => (item.nom_user != props.nomConnecte))
                 setListeComptes(result);
             }
@@ -134,6 +134,7 @@ export default function Comptes(props) {
             req.addEventListener('load', () => {
                 setNvCompte(utilisateur);
                 fermerModalConfirmation();
+                setReussi('');
                 setModalReussi(true);
             })
 
@@ -177,10 +178,10 @@ export default function Comptes(props) {
 
         const req2 = new XMLHttpRequest();
         if (heure.getHours() < 10 && heure.getHours() > 6) {
-            req2.open('POST', 'http://192.168.1.12/backend-cma/recette_jour.php?service=nuit');
+            req2.open('POST', 'http://localhost/backend-cma/recette_jour.php?service=nuit');
             req2.send(data);
         } else if (heure.getHours() > 14 && heure.getHours() < 18) {
-            req2.open('POST', 'http://192.168.1.12/backend-cma/recette_jour.php?service=jour');
+            req2.open('POST', 'http://localhost/backend-cma/recette_jour.php?service=jour');
             req2.send(data);
         }
 
@@ -213,6 +214,28 @@ export default function Comptes(props) {
         req.send(data);
     }
 
+    const afficherCompte = (e) => {
+        // Affichage d'un compte
+        setCompteSelectionne(listeComptes.filter(item => item.nom_user === e.target.id));
+    }
+
+    const supprimerCompte = () => {
+        // Suppression d'un compte
+        if (compteSelectionne.length > 0) {
+            const req = new XMLHttpRequest();
+            req.open('GET', `http://localhost/backend-cma/supprimer_vendeur.php?compte=${compteSelectionne[0].nom_user}`);
+
+            req.addEventListener('load', () => {
+                if(req.status >= 200 && req.status < 400) {
+                    setCompteSelectionne([]);
+                    setReussi('supp');
+                    setModalReussi(true);
+                }
+            })
+            req.send();
+        }
+    }
+
     const fermerModalConfirmation = () => {
         setModalConfirmation(false);
       }
@@ -237,16 +260,27 @@ export default function Comptes(props) {
                 style={customStyles2}
                 contentLabel="Commande réussie"
             >
-                <h2 style={{color: '#fff'}}>Enregistré avec succès✔️!</h2>
-                <button style={{width: '10%', height: '5vh', cursor: 'pointer', marginRight: '10px'}} onClick={fermerModalReussi}>OK</button>
+                {reussi === 'supp' ?
+                (
+                    <Fragment>
+                        <h2 style={{color: '#fff'}}>Compte supprimé✔️!</h2>
+                        <button style={{width: '25%', height: '5vh', cursor: 'pointer', marginRight: '10px'}} onClick={fermerModalReussi}>Fermer</button>
+                    </Fragment>
+                ) : 
+                (
+                    <Fragment>
+                        <h2 style={{color: '#fff'}}>Enregistré avec succès✔️!</h2>
+                        <button style={{width: '25%', height: '5vh', cursor: 'pointer', marginRight: '10px'}} onClick={fermerModalReussi}>Fermer</button>
+                    </Fragment>
+                )}
             </Modal>
-            <h1>Gestions des comptes et recettes</h1>
+            <h1>Gestions des comptes</h1>
             <div className="container-gestion">
                 <div className="box-1">
                     <h1>Comptes</h1>
                     <ul>
                         {listeComptes.length > 0 && listeComptes.map(item => (
-                        <li id={item.nom_user} onClick={afficherRecettes}>{item.nom_user.toUpperCase()}</li>
+                        <li id={item.nom_user} onClick={afficherCompte}>{item.nom_user.toUpperCase()}</li>
                         ))}
                     <div className="nv-compte">
                         <button onClick={ajouterCompte}>ajouter</button>
@@ -254,27 +288,20 @@ export default function Comptes(props) {
                     </ul>
                 </div>
                 <div className="box-2">
-                    <h1>Recettes</h1>
-                    <table>
-                        <thead>
-                            <tr>
-                                <td>montant</td>
-                                <td>par</td>
-                                <td>le</td>
-                                <td>status</td>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {recettes.length > 0 && recettes.map(item => (
-                                <tr>
-                                    <td>{item.montant + ' Fcfa'}</td>
-                                    <td>{item.nom.toUpperCase()}</td>
-                                    <td>{item.date_versement}</td>
-                                    <td>✔️</td>
-                                </tr>
-                            ))}
-                        </tbody>
-                    </table>
+                <h1>Détails Compte</h1>
+                   <div className="details-compte" style={{width: '100%', display: 'flex', justifyContent: 'space-around'}}>
+                        <div style={{width: '100%', textAlign: 'center'}}>
+                            <div style={{width: '100%'}}>Nom</div>
+                            <div style={{width: '100%', fontWeight: '600'}}>{compteSelectionne.length > 0 && compteSelectionne[0].nom_user}</div>
+                        </div>
+                        <div style={{width: '100%', textAlign: 'center'}}>
+                            <div style={{width: '100%'}}>Rôle</div>
+                            <div style={{width: '100%', fontWeight: '600'}}>{compteSelectionne.length > 0 && compteSelectionne[0].rol}</div>
+                        </div>
+                   </div>
+                   <div style={{width: '100%', textAlign: 'center',}}>   
+                        <button style={{width: '15%', marginTop: '30px', backgroundColor: '#e14046'}} onClick={supprimerCompte}>Supprimer</button>
+                   </div>
                 </div>
             </div>
         </section>

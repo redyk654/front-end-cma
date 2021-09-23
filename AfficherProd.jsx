@@ -5,12 +5,12 @@ export default function AfficherProd(props) {
         <Fragment>
             <div className="box">
                 <div className="item">
-                    <p>Code</p>
-                    <p>{props.code}</p>
-                </div>
-                <div className="item">
                     <p>Désignation</p>
                     <p>{props.designation}</p>
+                </div>
+                <div className="item">
+                    <p>Code</p>
+                    <p>{props.code}</p>
                 </div>
                 {props.pu_achat && 
                 <div className="item">
