@@ -48,6 +48,36 @@ export default function Bordereau(props) {
         req.send(data);
     }
 
+    const mois = (str) => {
+
+        switch(parseInt(str.substring(3, 5))) {
+            case 1:
+                return str.substring(0, 2) + " janvier " + str.substring(6, 10);
+            case 2:
+                return str.substring(0, 2) + " fevrier " + str.substring(6, 10);
+            case 3:
+                return str.substring(0, 2) + " mars " + str.substring(6, 10);
+            case 4:
+                return str.substring(0, 2) + " avril " +  str.substring(6, 10);
+            case 5:
+                return str.substring(0, 2) + " mai " + str.substring(6, 10);
+            case 6:
+                return str.substring(0, 2) + " juin " + str.substring(6, 10);
+            case 7:
+                return str.substring(0, 2) + " juillet " + str.substring(6, 10);
+            case 8:
+                return str.substring(0, 2) + " août " + str.substring(6, 10);
+            case 9:
+                return str.substring(0, 2) + " septembre " + str.substring(6, 10);
+            case 10:
+                return str.substring(0, 2) + " octobre " + str.substring(6, 10);
+            case 11:
+                return str.substring(0, 2) + " novembre " + str.substring(6, 10);
+            case 12:
+                return str.substring(0, 2) + " décembre " + str.substring(6, 10);
+        }
+    }
+
     return (
         <section className="container-bordereaux">
             <div className="box-liste">
@@ -65,7 +95,7 @@ export default function Bordereau(props) {
                 <h1>Bordereau de la commande</h1>
                 <div className="entete-bordereau">Fournisseur : &nbsp;<span className="span-entete">{infosCommande.fournisseur && infosCommande.fournisseur}</span></div>
                 <div className="entete-bordereau">Commandé par : &nbsp;<span className="span-entete">{infosCommande.vendeur && infosCommande.vendeur}</span></div>
-                <div className="entete-bordereau">Le : &nbsp;<span className="span-entete">{infosCommande.date_commande && infosCommande.date_commande.substr(0, 10)}</span></div>
+                <div className="entete-bordereau">Le : &nbsp;<span className="span-entete">{infosCommande.date_commande && mois(infosCommande.date_commande.substr(0, 10))}</span></div>
                 <div className="entete-bordereau">Montant : &nbsp;<span className="span-entete">{infosCommande.montant && infosCommande.montant + ' Fcfa'}</span></div>
                 <h1>Produits commandés</h1>
                 <AfficherBordereau commandesSelectionne={commandesSelectionne} />

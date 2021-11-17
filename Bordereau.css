@@ -27,7 +27,7 @@
 }
 
 .container-bordereaux div:first-child {
-    width: 35%;
+    width: 25%;
     margin-right: 10px;
 }
 
@@ -95,4 +95,10 @@
 
 .container-bordereaux .box-bordereau table thead tr td, .container-bordereaux .box-bordereau table tbody tr td {
     text-align: center;
+}
+
+.container-bordereaux .box-bordereau table tbody tr:hover {
+    background-color: #0e771a;
+    color: #f1f1f1;
+    font-weight: 600;
 }

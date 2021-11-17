@@ -24,6 +24,7 @@ export default function Historique(props) {
     const [listeHistorique, setListeHistorique] = useState([]);
     const [listeSauvegarde, setListeSauvegarde] = useState([]);
     const [medocSelectionne, setMedocSelectionne] = useState(false);
+    const [medocSelectionneSauvegarde, setMedocSelectionneSauvegarde] = useState(false);
     const [stockInitial, setStockInitial] = useState(false);
     const [stockSorti, setStockSorti] = useState(false);
     const [stockRestant, setStockRestant] = useState(false);
@@ -31,6 +32,7 @@ export default function Historique(props) {
     const [dateApprov, setDateApprov] = useState(false);
     const [alerteStock, setAlerteStock] = useState('');
     const [modalReussi, setModalReussi] = useState(false);
+    const [non_paye, setNonPaye] = useState(false);
 
     useEffect(() => {
         startChargement();
@@ -55,8 +57,18 @@ export default function Historique(props) {
         }
     }, [stockRestant]);
 
+    useEffect(() => {
+        if (medocSelectionne && medocSelectionneSauvegarde) {
+            if (non_paye) {
+                setMedocSelectionne(medocSelectionneSauvegarde.filter(item => (item.status_vente === "non payé")));
+            } else {
+                setMedocSelectionne(medocSelectionneSauvegarde);
+            }
+        }
+    }, [non_paye])
+
     const filtrerListe = (e) => {
-        const medocFilter = listeSauvegarde.filter(item => (item.designation.indexOf(e.target.value) !== -1))
+        const medocFilter = listeSauvegarde.filter(item => (item.designation.toLowerCase().indexOf(e.target.value.toLowerCase()) !== -1 || item.id === e.target.value));
         setListeHistorique(medocFilter);
     }
 
@@ -91,11 +103,13 @@ export default function Historique(props) {
             if (req1.status >= 200 && req1.status < 400) {
                 const result = JSON.parse(req1.responseText);
                 setMedocSelectionne(result);
-
+                setMedocSelectionneSauvegarde(result);
                 // Calcul de la quantité total sortie du produit
                 let qte_sortie = 0;
                 result.map(item => {
-                    qte_sortie += parseInt(item.quantite);
+                    if (item.status_vente === "payé") {
+                        qte_sortie += parseInt(item.quantite);
+                    }
                 });
                 setStockSorti(qte_sortie);
             } else {
@@ -179,6 +193,7 @@ export default function Historique(props) {
                     </ul>
                 </div>
                 <div className="table-commandes">
+                    <div className="entete-historique">Non payés: <input checked={non_paye} onChange={() => setNonPaye(!non_paye)} type="checkbox" name="non_paye" id="non_paye" /></div>
                     <div className="entete-historique">Stock du : <span style={{fontWeight: '600'}}>{dateApprov && dateApprov}</span></div>
                     <div className="entete-historique">Quantité initiale : <span style={{fontWeight: '600'}}>{stockRestant && parseInt(stockRestant) + parseInt(stockSorti)}</span></div>
                     <div className="entete-historique">Quantité sortie : <span style={{fontWeight: '600'}}>{stockSorti && stockSorti}</span></div>
@@ -191,10 +206,11 @@ export default function Historique(props) {
                                 <td>Code</td>
                                 <td>Désignation</td>
                                 <td>Catégorie</td>
-                                <td>Quantité</td>
-                                <td>Vendu par</td>
+                                <td>Qté sortie</td>
+                                <td>Par</td>
                                 <td>Le</td>
                                 <td>À</td>
+                                <td>Status</td>
                             </tr>
                         </thead>
                         <tbody>
@@ -207,6 +223,7 @@ export default function Historique(props) {
                                     <td>{item.nom_vendeur.toUpperCase()}</td>
                                     <td>{mois(item.date_vente.substr(0, 10))}</td>
                                     <td>{item.date_vente.substr(11)}</td>
+                                    <td>{item.status_vente}</td>
                                 </tr>
                             )) : null}
                         </tbody>

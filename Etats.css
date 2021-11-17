@@ -1,0 +1,60 @@
+.etats .table-commandes table {
+    width: 100%;
+    padding: 0px 10px;
+    border-collapse: collapse;
+}
+
+.etats button {
+    color: #fff;
+    background: #012557;
+    font-size: 18px;
+    margin-top: 5px;
+    margin-left: 5px;
+    width: 10%;
+    height: 4vh;
+    cursor: pointer;
+}
+
+.etats h1 {
+    background: #0e771a;
+    color: #fff;
+    text-align: center;
+    padding: 5px 0px;
+}
+
+.etats .table-commandes {
+    height: 76vh;
+    width: 100%;
+    border: 1px solid #0e771a;
+    overflow-y: auto;
+    margin-top: 10px;
+}
+
+.etats .table-commandes table thead {
+    font-weight: 600;
+    background: #0e771a;
+    color: #f1f1f1;
+    position: sticky;
+    top: 0;
+}
+
+.etats .table-commandes table tbody tr:hover {
+    background-color: #0e771a;
+    color: #f1f1f1;
+    font-weight: 600;
+}
+
+.etats .table-commandes table tbody {
+    position: relative;
+}
+
+.etats .table-commandes table tbody .loader {
+    position: absolute;
+    left: 45%;
+    top: 160px;
+}
+
+.etats .table-commandes .entete-historique {
+    width: 100%;
+    text-align: center;
+}

@@ -1,6 +1,6 @@
 import './App.css';
 import './fontawesome-free-5.15.3-web/fontawesome-free-5.15.3-web/css/all.min.css';
-import { Fragment, useState } from 'react';
+import { Fragment, useState, useEffect } from 'react';
 import Entete from './Composants/Entete/Entete';
 import Connexion from './Composants/Connexion/Connexion';
 import Commande from './Composants/Commande/Commande';
@@ -8,6 +8,7 @@ import Historique from './Composants/Historique/Historique';
 import Maj from './Composants/Maj/Maj';
 import Comptes from './Composants/Comptes/Comptes';
 import GestionFactures from './Composants/GestionFactures/GestionFactures';
+import Etats from './Composants/Etats/Etats';
 
 
 function App() {
@@ -23,6 +24,14 @@ function App() {
 
   const date_e = new Date('2022-04-06');
   const date_jour  = new Date();
+
+  useEffect(() => {
+    if(role === role1) {
+      setOnglet(6);
+    } else {
+      setOnglet(1);
+    }
+  }, [role, connecter]);
 
   let contenu;
   switch(onglet) {
@@ -40,6 +49,8 @@ function App() {
       break;
     case 5:
       contenu = <GestionFactures nomConnecte={nomConnecte} />
+    case 6:
+      contenu = <Etats nomConnecte={nomConnecte} />
   }
 
   if (connecter && date_jour.getTime() < date_e.getTime()) {
@@ -49,7 +60,7 @@ function App() {
           <Entete nomConnecte={nomConnecte} setConnecter={setConnecter} setOnglet={setOnglet} />
           <section className="conteneur-onglets">
             <div className="onglets-blocs">
-              <div className={`tab ${onglet === 1 ? 'active' : ''}`} onClick={ () => {setOnglet(1)}}>Ventes</div>
+              <div className={`tab ${onglet === 6 ? 'active' : ''}`} onClick={ () => {setOnglet(6)}}>Etats</div>
               <div className={`tab ${onglet === 2 ? 'active' : ''}`} onClick={ () => {setOnglet(2)}}>Inventaires</div>
               <div className={`tab ${onglet === 3 ? 'active' : ''}`} onClick={ () => {setOnglet(3)}}>Gestion des stocks</div>
               <div className={`tab ${onglet === 4 ? 'active' : ''}`} onClick={ () => {setOnglet(4)}}>Comptes</div>

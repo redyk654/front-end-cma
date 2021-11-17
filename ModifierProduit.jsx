@@ -43,7 +43,7 @@ export default function ModifierProduit() {
     useEffect(() => {
         // Récupération de la liste de produits via Ajax
         const req = new XMLHttpRequest();
-        req.open('GET', 'http://localhost/backend-cma/recuperer_medoc.php');
+        req.open('GET', 'http://192.168.1.101/backend-cma/recuperer_medoc.php');
 
         req.addEventListener('load', () => {
             if(req.status >= 200 && req.status < 400) {
@@ -59,7 +59,7 @@ export default function ModifierProduit() {
     }, [refecth]);
 
     const filtrerListe = (e) => {
-        const medocFilter = listeSauvegarde.filter(item => (item.designation.indexOf(e.target.value) !== -1))
+        const medocFilter = listeSauvegarde.filter(item => (item.designation.toLowerCase().indexOf(e.target.value.toLowerCase()) !== -1))
         setListeProduit(medocFilter);
     }
 
@@ -76,7 +76,7 @@ export default function ModifierProduit() {
             data.append('id', produitSelectionne[0].id);
 
             const req = new XMLHttpRequest();
-            req.open('POST', 'http://localhost/backend-cma/supprimer_produit.php');
+            req.open('POST', 'http://192.168.1.101/backend-cma/supprimer_produit.php');
 
             req.addEventListener('load', () => {
                 if (req.status >= 200 && req.status < 400) {
@@ -105,7 +105,7 @@ export default function ModifierProduit() {
             data.append('designation', produitSelectionne[0].designation);
             
             const req = new XMLHttpRequest();
-            req.open('POST', 'http://localhost/backend-cma/maj_prix.php');
+            req.open('POST', 'http://192.168.1.101/backend-cma/maj_prix.php');
             
             req.addEventListener('load', () => {
                 if (req.status >= 200 && req.status < 400) {
@@ -122,6 +122,19 @@ export default function ModifierProduit() {
         }
     }
 
+    const supprimerProduitEpuise = () => {
+        const req = new XMLHttpRequest();
+        req.open('POST', 'http://192.168.1.101/backend-cma/vider.php?stock=0');
+        
+        req.addEventListener('load', () => {
+            if (req.status >= 200 && req.status < 400) {
+                setRefetch(!refecth);
+            }
+        });
+
+        req.send();
+    }
+
     const fermerModalConfirmation = () => {
         setModalConfirmation(false);
     }
@@ -131,7 +144,7 @@ export default function ModifierProduit() {
     }
     
     const fermerModalModifPrix = () => {
-        setModalModifPrix(false)
+        setModalModifPrix(false);
         setnvprix('');
     }
 
@@ -175,12 +188,13 @@ export default function ModifierProduit() {
             </Modal>
             <div className="col-1">
                 <h1>Produits en stock</h1>
+                <button onClick={supprimerProduitEpuise}>Vider</button>
                 <p className="search-zone">
                     <input type="text" placeholder="recherchez un produit" onChange={filtrerListe} />
                 </p>
                 <ul>
                     {afficherListe ? listeProduit.map(item => (
-                        <li value={item.id} key={item.id} onClick={selectionneProduit}>{item.designation.toLowerCase()}</li>
+                        <li value={item.id} key={item.id} onClick={selectionneProduit} style={{color: `${parseInt(item.en_stock) < parseInt(item.min_rec) ? 'red' : ''}`}}>{item.designation.toLowerCase()}</li>
                         )) : null}
                 </ul>
             </div>

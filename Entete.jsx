@@ -57,10 +57,10 @@ export default function Entete(props) {
 
         const req2 = new XMLHttpRequest();
         if (heure.getHours() <= 12 && heure.getHours() >= 6) {
-            req2.open('POST', 'http://localhost/backend-cma/recette_jour.php?service=nuit');
+            req2.open('POST', 'http://192.168.1.101/backend-cma/recette_jour.php?service=nuit');
             req2.send(data);
         } else if (heure.getHours() >= 14 && heure.getHours() <= 20) {
-            req2.open('POST', 'http://localhost/backend-cma/recette_jour.php?service=jour');
+            req2.open('POST', 'http://192.168.1.101/backend-cma/recette_jour.php?service=jour');
             req2.send(data);
         }
 
@@ -80,7 +80,7 @@ export default function Entete(props) {
         data.append('montant', recettejour.recette);
 
         const req = new XMLHttpRequest();
-        req.open('POST', 'http://localhost/backend-cma/gestion_recette.php');
+        req.open('POST', 'http://192.168.1.101/backend-cma/gestion_recette.php');
 
         req.addEventListener('load', () => {
             if (req.status >= 200 && req.status < 400) {
@@ -104,7 +104,7 @@ export default function Entete(props) {
             data.append('nouveau', nouveau);
 
             const req = new XMLHttpRequest();
-            req.open('POST', 'http://localhost/backend-cma/modif_password.php');
+            req.open('POST', 'http://192.168.1.101/backend-cma/modif_password.php');
 
             req.addEventListener('load', () => {
                 if (req.status >= 200 && req.status < 400) {
@@ -192,7 +192,7 @@ export default function Entete(props) {
                 <h3>{props.nomConnecte.toUpperCase()}</h3>
                 <button onClick={deconnection}>Déconnection</button>
             </div>
-            <button style={{width: '15%', position: 'absolute', left: '250px', bottom: 30}} onClick={() => {setModalConfirmation(true)}} >Modifier mot de passe</button>
+            <button style={{width: '15%', position: 'absolute', left: '300px', bottom: 30}} onClick={() => {setModalConfirmation(true)}} >Modifier mot de passe</button>
             <h1>
                 © CMA de Bepanda
             </h1>

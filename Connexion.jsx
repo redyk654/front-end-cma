@@ -10,6 +10,7 @@ export default function Connexion(props) {
     const [erreur, setErreur] = useState('')
     const [nom, setNom] = useState('');
     const [mdp, setMdp] = useState('');
+    const [showMdp, setShowMdp] = useState(false);
 
     // Contrôle des zone de saisie avec le state
     const handleChange = (e) => {
@@ -30,7 +31,7 @@ export default function Connexion(props) {
         data.append('mdp', mdp);
 
         const req = new XMLHttpRequest();
-        req.open('POST', 'http://localhost/backend-cma/connexion.php');
+        req.open('POST', 'http://192.168.1.101/backend-cma/connexion.php');
 
         req.addEventListener('load', () => {
             if (req.status >= 200 && req.status < 400) {
@@ -54,7 +55,7 @@ export default function Connexion(props) {
     return (
         <div className='form'>
             <form action="">
-                <h1 className='title'>Connexion</h1>
+                <h1 className='title'>CMA de Bepanda</h1>
                 <p className='text-field'>
                     <label htmlFor="nom" ref={name_field}>Identifiant</label>
                     <input
@@ -71,7 +72,7 @@ export default function Connexion(props) {
                 <p className='text-field'>
                     <label htmlFor="mdp" ref={password_field}>Mot de passe</label>
                     <input
-                    type="password"
+                    type={`${showMdp ? 'text' : 'password'}`}
                     name="mdp"
                     id="mdp"
                     value={mdp}
@@ -79,6 +80,10 @@ export default function Connexion(props) {
                     onFocus={() => password_field.current.style.bottom = '20px'}
                     onBlur={(e) => {if(e.target.value === '') password_field.current.style.bottom = '1px'}}
                     />
+                </p>
+                <p style={{marginTop: 8}}>
+                    <label htmlFor="" style={{color: '#fff'}}>Afficher mot de passe</label>
+                    <input type="checkbox" checked={showMdp} id="" onChange={(e) => setShowMdp(!showMdp)} />
                 </p>
                 <button type='submit' onClick={verifConnexion} >Se connecter</button>
                 <div className='message-erreur'>{erreur}</div>

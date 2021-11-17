@@ -89,7 +89,7 @@ export default function Approvisionner(props) {
     }, []);
 
     const filtrerListe = (e) => {
-        const medocFilter = listeSauvegarde.filter(item => (item.designation.indexOf(e.target.value) !== -1))
+        const medocFilter = listeSauvegarde.filter(item => (item.designation.toLowerCase().indexOf(e.target.value.toLowerCase()) !== -1));
         setListeProduit(medocFilter);
     }
 
@@ -121,7 +121,7 @@ export default function Approvisionner(props) {
         } else {
             if (isNaN(stock_ajoute)) {
                 setMsgErreur('veuillez saisir un nombre dans la quantité commandé');
-            } else if (!regex.test(date_peremption)) {
+            } else if (!regex.test(date_peremption) && date_peremption.length > 0) {
                 setMsgErreur('Le format de la date de péremption est incorrect');
             } else {
                 if(parseInt(stock_ajoute) > 0) {
@@ -220,7 +220,7 @@ export default function Approvisionner(props) {
 
     const fermerModalConfirmation = () => {
         setModalConfirmation(false);
-      }
+    }
   
     const fermerModalReussi = () => {
         setModalReussi(false);
@@ -340,10 +340,12 @@ export default function Approvisionner(props) {
                             <tr>
                                 <td>Code</td>
                                 <td>Désignation</td>
+                                <td>Catégorie</td>
                                 <td>Conditionnement</td>
-                                <td>Quantité commandé</td>
-                                <td>Pu d'achat</td>
-                                <td>Date péremption</td>
+                                <td>Qté commandé</td>
+                                <td>Pu achat</td>
+                                <td>Pu vente</td>
+                                <td>Date exp</td>
                                 <td>Stock minimum</td>
                             </tr>
                         </thead>
@@ -352,9 +354,11 @@ export default function Approvisionner(props) {
                                 <tr>
                                     <td>{item.code}</td>
                                     <td>{item.designation}</td>
+                                    <td>{item.categorie}</td>
                                     <td>{item.conditionnement}</td>
                                     <td>{item.stock_ajoute}</td>
                                     <td>{item.pu_achat}</td>
+                                    <td>{item.pu_vente}</td>
                                     <td>{item.date_peremption}</td>
                                     <td>{item.min_rec}</td>
                                 </tr>

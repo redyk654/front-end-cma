@@ -116,3 +116,9 @@
 .approvisionner .produits-commandes table thead tr td, .approvisionner .produits-commandes table tbody tr td {
     text-align: center;
 }
+
+.approvisionner .produits-commandes table tbody tr:hover {
+    background-color: #0e771a;
+    color: #f1f1f1;
+    font-weight: 600;
+}
